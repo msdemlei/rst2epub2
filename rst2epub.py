@@ -172,6 +172,17 @@ class HTMLTranslator(html4css1.HTMLTranslator):
     def depart_envvar(self, node):
         self.depart_literal(node)
 
+    def visit_container(self, node):
+        # Add an epub:type attribute to containers if someone has
+        # given node an epub_type attribute (do this for more
+        # node types?)
+        html4css1.HTMLTranslator.visit_container(self, node)
+        # there doesn't seem to be a way to inject namespaced
+        # attributes into the HTML writer.  Let's hack them
+        if hasattr(node, "epub_type"):
+	        self.body[-1] = self.body[-1].replace(
+	        	'>', ' epub:type="%s">'%node.epub_type)
+
     def visit_literal(self, node):
         if self.at('index'):
             return
@@ -627,7 +638,8 @@ book will follow suit.</paragraph></footnote>
 XHTML_WRAPPER = u'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+	xmlns:epub="http://www.idpf.org/2007/ops">
 <head>
 <title>{title}</title>
 <meta http-equiv="Content-type" content="application/xhtml+xml;charset=utf8" />
