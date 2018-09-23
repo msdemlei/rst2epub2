@@ -34,6 +34,38 @@ both epub and mobi files.
 
 Feel free to interact via github for support.
 
+Injecting RST Extensions
+------------------------
+
+Sometimes you need custom RST extensions in a book project.  To let you 
+declare these, rst2epub2 will import a module local_extensions.py that
+sits in the directory it is executed in.  This module should, as a
+side effect of the import, declare directives or text roles.  For 
+instance, the following code would define directive ``article-intro`` (that 
+essentially just attaches a class to the child material):
+
+	from docutils import nodes
+	from docutils.parsers.rst import directives
+	from docutils.parsers import rst
+
+	class _ArticleIntro(rst.Directive):
+		has_content = True
+
+		def run(self):
+			self.assert_has_content()
+			body = "\n".join(self.content)
+			wrapper = nodes.container(rawsource=body)
+			self.state.nested_parse(self.content, 0, wrapper)
+			wrapper["classes"].append("article-intro")
+			return [wrapper]
+
+	directives.register_directive("article-intro", _ArticleIntro)
+
+Note that with this feature someone might make you check out an rstx 
+epub project and then execute arbitrary code while you simply run 
+rst2epub.  We are not sure if that is an expectable attack scenario.
+
+
 Thanks
 ========
 
