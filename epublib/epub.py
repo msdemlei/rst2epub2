@@ -285,8 +285,6 @@ class EpubBook:
         return max(self.last_node_at_depth.keys())
 
     def add_toc_map_node(self, href, title, depth=None, parent=None):
-        if not title:
-            import pdb;pdb.set_trace()
         print "TITLE", title
         node = TocMapNode()
         node.href = href

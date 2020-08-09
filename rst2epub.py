@@ -623,6 +623,8 @@ book will follow suit.</paragraph></footnote>
                 self.book.add_creator(v)
             elif k.lower() == 'title':
                 self.book.set_title(v)
+            elif k.lower() == 'language':
+                self.book.set_lang(v)
             else:
                 self.book.add_meta(k, v)
         self.book.add_creator(', '.join(self.authors))
@@ -638,7 +640,7 @@ book will follow suit.</paragraph></footnote>
 XHTML_WRAPPER = u'''<?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN"
 "http://www.w3.org/TR/xhtml11/DTD/xhtml11.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en"
+<html xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:epub="http://www.idpf.org/2007/ops">
 <head>
 <title>{title}</title>
