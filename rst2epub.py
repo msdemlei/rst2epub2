@@ -872,6 +872,21 @@ roles.register_local_role("envvar", ignore_role)
 
 
 def main(args=sys.argv):
+		# If there is a file local_extension.py in the local directory,
+		# import it; it is assumed that it will define docutils extensions,
+		# and thus the namespace is discarded.
+		# TODO: Do we want to require a flag so people have to turn on
+		# extensibility manually?
+    if os.path.exists("local_extensions.py"):
+        import imp
+        moddesc = imp.find_module("local_extensions", ["."])
+        imp.acquire_lock()
+        try:
+            modNs = imp.load_module("local_extensions", *moddesc)
+        finally:
+            imp.release_lock()
+
+
     argv = None
     reader = standalone.Reader()
     reader_name = "standalone"
