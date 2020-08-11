@@ -274,6 +274,11 @@ class HTMLTranslator(html4css1.HTMLTranslator):
         <footnote_reference auto="1" ids="id2" refid="id3">1</footnote_reference>"""
         refid = node.attributes["refid"]
         ids = node.attributes["ids"][0]
+        # remove preceding whitespace (not sure why that doesn't happen
+        # here automatically)
+        if self.body and self.body[-1]:
+          self.body[-1] = self.body[-1].rstrip()
+
         self.body.append('<sup><a href="#{}" id="{}">'.format(refid, ids))
 
     def depart_footnote_reference(self, node):
@@ -306,14 +311,14 @@ book will follow suit.</paragraph></footnote>
 
     def visit_label(self, node):
         if self.at("footnote"):
-            self.body.append('<a href="#{}">'.format(self.backref))
+            self.body.append('<sup><a href="#{}">'.format(self.backref))
 
         else:
             html4css1.HTMLTranslator.visit_label(self, node)
 
     def depart_label(self, node):
         if self.at("footnote"):
-            self.body.append("</a>&nbsp;-&nbsp;")
+            self.body.append("</a></sup> ")
         else:
             html4css1.HTMLTranslator.depart_label(self, node)
 
